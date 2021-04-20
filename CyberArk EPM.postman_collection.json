@@ -1,0 +1,1031 @@
+{
+	"info": {
+		"_postman_id": "c7515202-2b39-4f3d-af44-2c9d33f12e3f",
+		"name": "CyberArk EPM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "EPM authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//function stripEndQuotes(s){\r",
+									"//\tvar t=s.length;\r",
+									"//\tif (s.charAt(0)=='\"') s=s.substring(1,t--);\r",
+									"//\tif (s.charAt(--t)=='\"') s=s.substring(0,t);\r",
+									"//\treturn s;\r",
+									"//}\r",
+									"//var jsonData = JSON.parse(responseBody);\r",
+									"//str=stripEndQuotes(jsonData.EPMAuthenticationResult);\r",
+									"//postman.setEnvironmentVariable(\"EPMAuthenticationResult\", str);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Username\": {{EPMUsername}},\r\n    \"Password\": {{EPMPassword}},\r\n    \"ApplicationID\": {{EPMAppID}}  // Source application ID that distinguishes between REST API calls from EPM and REST API calls from another application. We recommend that you specify the customer's name.\r\n}"
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Auth/EPM/Logon",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Auth",
+								"EPM",
+								"Logon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Windows Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//function stripEndQuotes(s){\r",
+									"//\tvar t=s.length;\r",
+									"//\tif (s.charAt(0)=='\"') s=s.substring(1,t--);\r",
+									"//\tif (s.charAt(--t)=='\"') s=s.substring(0,t);\r",
+									"//\treturn s;\r",
+									"//}\r",
+									"//var jsonData = JSON.parse(responseBody);\r",
+									"//str=stripEndQuotes(jsonData.EPMAuthenticationResult);\r",
+									"//postman.setEnvironmentVariable(\"EPMAuthenticationResult\", str);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ApplicationID\": \"string\"   // Source application ID that distinguishes between REST API calls from EPM and REST API calls from another application\r\n}"
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/<Version>/Auth/Windows/Logon",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"<Version>",
+								"Auth",
+								"Windows",
+								"Logon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SAML Authentication",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"SAMLResponse\": {{IDPToken}}    // The token received from the IdP.\r\n}"
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/SAML/Logon",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"SAML",
+								"Logon"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Get aggregated events",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Events/{{EPMCategory}}?Offset={{EPMOffset}}&Limit={{EPMLimit}}&EventType={{EPMEventType}}&Publisher={{EPMPublisher}}&DateFrom={{EPMDateFrom}}&DateTo={{EPMDateTo}}&Justification={{EPMJustification}}&ApplicationType={{EPMApplicationType}}&PolicyName={{EPMPolicyName}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Events",
+								"{{EPMCategory}}"
+							],
+							"query": [
+								{
+									"key": "Offset",
+									"value": "{{EPMOffset}}",
+									"description": "Number of events to skip\n\nType: Number\n\nValid value: 0 (zero) or higher\n\nDefault value: 0\n\nMandatory: No"
+								},
+								{
+									"key": "Limit",
+									"value": "{{EPMLimit}}",
+									"description": "Maximum number of events to return\n\nType: Number\n\nValid value: 1-100\n\nMandatory: No"
+								},
+								{
+									"key": "EventType",
+									"value": "{{EPMEventType}}",
+									"description": "Event type. Specify All or a list of event types separated by commas.\n\nFor the list of event types, see Event Types.\n\nType: String\n\nValid values: All\n\nMandatory: No"
+								},
+								{
+									"key": "Publisher",
+									"value": "{{EPMPublisher}}",
+									"description": "Digital signature of the application that triggered the event (if applicable). Wildcards and unsigned are supported.\n\nType: String\n\nValid values: The following wildcards:\n\n\"xxx xxx\" - filters the exact value between the quotes\nxxx xxx - filters anything that contains the string\n*xxx xxx* - filters anything that contains the string between the *\nxxx* - filters all strings that start with the value before the *\n*xxx - filters all strings that end with the value after the *\nMandatory: No"
+								},
+								{
+									"key": "DateFrom",
+									"value": "{{EPMDateFrom}}",
+									"description": "Only show events since the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not valued, only events from the last day are returned\n\nMandatory: No"
+								},
+								{
+									"key": "DateTo",
+									"value": "{{EPMDateTo}}",
+									"description": "Only show events until the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not valued, only events from the last day are returned\n\nMandatory: No"
+								},
+								{
+									"key": "Justification",
+									"value": "{{EPMJustification}}",
+									"description": "Determines if the event has justification details\n\nNot relevant for ThreatDetection\n\nType: String\n\nValid values: All/WithJustification\n\nDefault values: All\n\nMandatory: No"
+								},
+								{
+									"key": "ApplicationType",
+									"value": "{{EPMApplicationType}}",
+									"description": "Type of application that triggers the event. Specify All or a list of application types separated by commas.\n\nNot relevant for ThreatDetection\n\nType: String\n\nValid values: Executable, Script, MSI, MSU, ActiveX, Com, Win8App, DLL, DMG, PKG\n\nDefault values: All\n\nMandatory: No"
+								},
+								{
+									"key": "PolicyName",
+									"value": "{{EPMPolicyName}}",
+									"description": "Name of the policy that triggers the event. Wildcards are supported.\n\nNot relevant for ApplicationEvents\n\nType: String\n\nValid values: The following wildcards:\n\n\"xxx xxx\" - filters the exact value between the quotes\nxxx xxx - filters anything that contains the string\n*xxx xxx* - filters anything that contains the string between the *\nxxx* - filters all strings that start with the value before the *\n*xxx - filters all strings that end with the value after the *\nMandatory: No"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get raw events",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\n\nType: String\n\nValid value: basic <Token>\n\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\n\nType: String\n\nValid value: <Token>\n\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Events/{{EPMCategory}}/{{EPMFileQualifier}}?Offset={{EPMOffset}}&Limit={{EPMLimit}}&EventType={{EPMEventType}}&DateFrom={{EPMDateFrom}}&DateTo={{EPMDateTo}}&Justification={{EPMJustification}}&PolicyName={{EPMPolicyName}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Events",
+								"{{EPMCategory}}",
+								"{{EPMFileQualifier}}"
+							],
+							"query": [
+								{
+									"key": "Offset",
+									"value": "{{EPMOffset}}",
+									"description": "Number of events to skip\n\nType: Number\n\nValid value: 0 (zero) or higher\n\nDefault value: 0\n\nMandatory: No"
+								},
+								{
+									"key": "Limit",
+									"value": "{{EPMLimit}}",
+									"description": "Maximum number of events to return\n\nType: Number\n\nValid value: 1-100\n\nMandatory: No"
+								},
+								{
+									"key": "EventType",
+									"value": "{{EPMEventType}}",
+									"description": "Event type. Specify All or a list of event types separated by commas.\n\nFor the list of event types, see Event Types.\n\nType: String\n\nValid values: All\n\nMandatory: No"
+								},
+								{
+									"key": "DateFrom",
+									"value": "{{EPMDateFrom}}",
+									"description": "Only show events since the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not valued, only events from the last day are returned\n\nMandatory: No"
+								},
+								{
+									"key": "DateTo",
+									"value": "{{EPMDateTo}}",
+									"description": "Only show events until the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not valued, only events from the last day are returned\n\nMandatory: No"
+								},
+								{
+									"key": "Justification",
+									"value": "{{EPMJustification}}",
+									"description": "Determines if the event has justification details\n\nNot relevant for ThreatDetection\n\nType: String\n\nValid values: All/WithJustification\n\nDefault values: All\n\nMandatory: No"
+								},
+								{
+									"key": "PolicyName",
+									"value": "{{EPMPolicyName}}",
+									"description": "Name of the policy that triggers the event. Wildcards are supported.\n\nNot relevant for ApplicationEvents\n\nType: String\n\nValid values: The following wildcards:\n\n\"xxx xxx\" - filters the exact value between the quotes\nxxx xxx - filters anything that contains the string\n*xxx xxx* - filters anything that contains the string between the *\nxxx* - filters all strings that start with the value before the *\n*xxx - filters all strings that end with the value after the *\nMandatory: No"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get raw event details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\n\nType: String\n\nValid value: basic <Token>\n\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\n\nType: String\n\nValid value: <Token>\n\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Events/{{EPMCategory}}/Raw/{{EPMEventID}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Events",
+								"{{EPMCategory}}",
+								"Raw",
+								"{{EPMEventID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get admin audit data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\n\nType: String\n\nValid value: basic <Token>\n\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\n\nType: String\n\nValid value: <Token>\n\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/AdminAudit?DateFrom={{EPMDateFrom}}&DateTo={{EPMDateTo}}&Offset={{EPMOffset}}&Limit={{EPMLimit}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"AdminAudit"
+							],
+							"query": [
+								{
+									"key": "DateFrom",
+									"value": "{{EPMDateFrom}}",
+									"description": "Only include events since the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not set, only events from the last day are returned\n\nIf only DateFrom is set, all events from that date are returned\n\nMandatory: No"
+								},
+								{
+									"key": "DateTo",
+									"value": "{{EPMDateTo}}",
+									"description": "Only include events until the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not set, only events from the last day are returned\n\nIf only DateTo is set, all events until that date are returned\n\nMandatory: No"
+								},
+								{
+									"key": "Offset",
+									"value": "{{EPMOffset}}",
+									"description": "Number of events to skip\n\nType: Number\n\nValid values: 0 (zero) or higher\n\nDefault value: 0\n\nMandatory: No"
+								},
+								{
+									"key": "Limit",
+									"value": "{{EPMLimit}}",
+									"description": "Maximum number of events to return\n\nType: Number\n\nValid values: Higher than 0 (zero)\n\nDefault value: 50\n\nMandatory: No"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Policies",
+			"item": [
+				{
+					"name": "Create advanced policy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Activation\":{\r\n        \"Enabled\":true,\r\n        \"ActivateDate\":null,\r\n        \"DeactivateDate\":null\r\n    },\r\n    \"PolicyType\": \"AdvancedWinApp\",\r\n    \"Name\": \"string\",\r\n    \"Action\": \"string\",\r\n    \"IncludeComputersInSet\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"ExcludeComputersInSet\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"IncludeComputerGroups\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"ExcludeComputerGroups\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"IncludeUsers\":[\r\n        {\r\n            \"UserName\": \"YourDomain\\\\YourUserName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourUsersSID\"\r\n        }\r\n    ],\r\n    \"IncludeUserGroups\":[\r\n        {\r\n            \"GroupName\": \"YourDomain\\\\YourGroupName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourGroupSID\"\r\n        }\r\n    ],\r\n    \"IncludeADComputerGroups\":[\r\n        {\r\n            \"GroupName\": \"YourDomain\\\\YourComputerGroupName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourGroupSID\"\r\n        }\r\n    ],\r\n    \"ExcludeADComputerGroups\":[\r\n        {\r\n            \"GroupName\": \"YourDomain\\\\YourComputerGroupName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourGroupSID\"\r\n        }\r\n    ],\r\n    \"Applications\": [\r\n        {\r\n            \"Type\": \"EXE\",\r\n            \"Checksum\": \"SHA1:5FF30FF14984820C01941F767CE47F0F39BDE265\",\r\n            \"FileName\": \"grep.exe\",\r\n            \"FileSize\": 135680,\r\n            \"Location\": \"Fixed\"\r\n        },\r\n        {\r\n            \"Type\": \"EXE\",\r\n            \"Description\": \"Command-Based Script\",\r\n            \"FileName\": \"cscript.exe\",\r\n            \"FileNameCompare\": \"Exactly\",\r\n            \"Location\": \"%SystemRoot%\",\r\n            \"Signature\": \"Microsoft\",\r\n            \"SignatureCompare\": \"Prefix\"\r\n        },\r\n        {\r\n            \"Type\": \"EXE\",\r\n            \"Location\": \"c:\\\\Users\\\\user1\\\\Documents\\\\tmp\",\r\n            \"LocationCompare\": \"WithSubfolders\",\r\n            \"FileName\": \"WinMD5.exe\",\r\n            \"Owner\": \"MyOwnDomain\\\\MyUser\",\r\n            \"MinFileVersion\": \"6.1\",\r\n            \"MaxFileVersion\": \"8.2.5\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Just in Time Access and Elevation Policy Definition",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Duration\": {{EPMJITPolicyDuration}},\r\n    \"PolicyType\": \"AdHocElevate\",   // For JIT and Elevation Policy this must always be AdHocElevate\r\n    \"Name\": \"PolicyName\",\r\n    \"TerminateProcess\": {{EMTermProcessTrueFalse}},\r\n    \"Audit\": {{EMAuditTrueFalse}},\r\n    \"Justification\": \"{{EPMJustificationString\",\r\n    \"IncludeComputersInSet\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"IncludeComputerGroups\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"IncludeADComputerGroups\":[\r\n        {\r\n            \"GroupName\": \"YourDomain\\\\YourComputerGroupName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourGroupSID\"\r\n        }\r\n    ],\r\n    \"IncludeUsers\":[\r\n        {\r\n            \"UserName\": \"YourDomain\\\\YourUserName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourUsersSID\"\r\n        }\r\n    ],\r\n    \"LocalGroups\":[\r\n        {\r\n            \"GroupName\": \"OS_Group\\\\YourGroupName\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update advanced policy",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Activation\":{\r\n        \"Enabled\":true,\r\n        \"ActivateDate\":null,\r\n        \"DeactivateDate\":null\r\n    },\r\n    \"PolicyType\": \"AdvancedWinApp\",\r\n    \"Name\": \"string\",\r\n    \"Action\": \"string\",\r\n    \"IncludeComputersInSet\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"ExcludeComputersInSet\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"IncludeComputerGroups\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"ExcludeComputerGroups\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"IncludeUsers\":[\r\n        {\r\n            \"UserName\": \"YourDomain\\\\YourUserName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourUsersSID\"\r\n        }\r\n    ],\r\n    \"IncludeUserGroups\":[\r\n        {\r\n            \"GroupName\": \"YourDomain\\\\YourGroupName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourGroupSID\"\r\n        }\r\n    ],\r\n    \"IncludeADComputerGroups\":[\r\n        {\r\n            \"GroupName\": \"YourDomain\\\\YourComputerGroupName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourGroupSID\"\r\n        }\r\n    ],\r\n    \"ExcludeADComputerGroups\":[\r\n        {\r\n            \"GroupName\": \"YourDomain\\\\YourComputerGroupName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourGroupSID\"\r\n        }\r\n    ],\r\n    \"Applications\": [\r\n        {\r\n            \"Type\": \"EXE\",\r\n            \"Checksum\": \"SHA1:5FF30FF14984820C01941F767CE47F0F39BDE265\",\r\n            \"FileName\": \"grep.exe\",\r\n            \"FileSize\": 135680,\r\n            \"Location\": \"Fixed\"\r\n        },\r\n        {\r\n            \"Type\": \"EXE\",\r\n            \"Description\": \"Command-Based Script\",\r\n            \"FileName\": \"cscript.exe\",\r\n            \"FileNameCompare\": \"Exactly\",\r\n            \"Location\": \"%SystemRoot%\",\r\n            \"Signature\": \"Microsoft\",\r\n            \"SignatureCompare\": \"Prefix\"\r\n        },\r\n        {\r\n            \"Type\": \"EXE\",\r\n            \"Location\": \"c:\\\\Users\\\\user1\\\\Documents\\\\tmp\",\r\n            \"LocationCompare\": \"WithSubfolders\",\r\n            \"FileName\": \"WinMD5.exe\",\r\n            \"Owner\": \"MyOwnDomain\\\\MyUser\",\r\n            \"MinFileVersion\": \"6.1\",\r\n            \"MaxFileVersion\": \"8.2.5\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies/{{EPMPolicyID}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Policies",
+								"{{EPMPolicyID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Just in Time Access and Elevation Policy Definition",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Enabled\": {{EPMEnabledTrueFalse}},\r\n    \"Duration\": {{EPMJITPolicyDuration}},\r\n    \"PolicyType\": \"AdHocElevate\",   // For JIT and Elevation Policy this must always be AdHocElevate\r\n    \"Name\": \"PolicyName\",\r\n    \"TerminateProcess\": {{EMTermProcessTrueFalse}},\r\n    \"Audit\": {{EMAuditTrueFalse}},\r\n    \"Justification\": \"{{EPMJustificationString\",\r\n    \"IncludeComputersInSet\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"IncludeComputerGroups\":[\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        },\r\n        {\r\n            \"Id\": \"{{EPMComputerIDfromGetComputers}}\"\r\n        }\r\n    ],\r\n    \"IncludeADComputerGroups\":[\r\n        {\r\n            \"GroupName\": \"YourDomain\\\\YourComputerGroupName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourGroupSID\"\r\n        }\r\n    ],\r\n    \"IncludeUsers\":[\r\n        {\r\n            \"UserName\": \"YourDomain\\\\YourUserName\"\r\n        },\r\n        {\r\n            \"Sid\": \"YourUsersSID\"\r\n        }\r\n    ],\r\n    \"LocalGroups\":[\r\n        {\r\n            \"GroupName\": \"OS_Group\\\\YourGroupName\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies/{{EPMPolicyID}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Policies",
+								"{{EPMPolicyID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete policy",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies/{{EPMPolicyID}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Policies",
+								"{{EPMPolicyID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get policies",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies?Offset={{EPMOffset}}&Limit={{EPMLimit}}&PolicyType={{EPMPolicyType}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Policies"
+							],
+							"query": [
+								{
+									"key": "Offset",
+									"value": "{{EPMOffset}}",
+									"description": "Number of policies to skip\nType: Number\nValid value: 0 (zero) or higher\nDefault value: 0\nMandatory: No"
+								},
+								{
+									"key": "Limit",
+									"value": "{{EPMLimit}}",
+									"description": "Maximum number of policies to return\nType: Number\nValid value: Lower than 100\nMandatory: No"
+								},
+								{
+									"key": "PolicyType",
+									"value": "{{EPMPolicyType}}",
+									"description": "A query that sets the type of the policy to retrieve. See Policy types for a list of policy types.\nType: String\nValid value: Either of the following:\n'eq' - equals\n'in' - includes\nDefault value: Blank - include all policy types.\nMandatory: No"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get policy details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies/{{EPMPolicyID}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Policies",
+								"{{EPMPolicyID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Computers",
+			"item": [
+				{
+					"name": "Get computer groups",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/ComputerGroups?$filter={{EPMFilter}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"ComputerGroups"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "{{EPMFilter}}",
+									"description": "A query that filters results according to part of the computer group name.\nType: String\nValid values: Either of the following:\n'Name' - allowed operators\n'Contains' - part of the computer group name\nDefault value: All\nMandatory: No\nhttps://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/ComputerGroups?$filter=contains(Name,'MyGroup')"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get computers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Computers?$filter={{EPMFilter}}&LastSeendate={{EPMLastSeendate}}&offset={{EPMOffset}}&limit={{EPMLimit}}",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Computers"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "{{EPMFilter}}",
+									"description": "Filters by name.\nType: String\nValid value: Valid computer name\nValid operators: Valid operators in $filter:\neq\nin\ncontains\nDefault value: Blank (all)\nMandatory: No\nExamples:\nhttps://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Computers?$filter=ComputerName eq 'comp01'\nhttps://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Computers?$filter=ComputerName in('comp01', 'comp02')\nhttps://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Computers?$filter=contains(ComputerName, '01')\nhttps://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Computers?$filter=Platform eq 'MacOS' and ComputerName in('comp01', 'comp02')\nhttps://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Computers?$filter=Status in('Disconnected', 'Support')\nhttps://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Computers?$filter=Platform eq 'Windows' and Status eq 'Alive'"
+								},
+								{
+									"key": "LastSeendate",
+									"value": "{{EPMLastSeendate}}",
+									"description": "Includes all computers that were not connected since the set date.\nType: Date\nValid value: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\nDefault value: Blank (all)\nMandatory: No\nhttps://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Computers?LastSeendate=yyyy-mm-dd:hhmmssZ"
+								},
+								{
+									"key": "offset",
+									"value": "{{EPMOffset}}",
+									"description": "The number of computers to skip.\nType: Number\nValid value: 0 (zero) or higher\nMandatory: No\nExample:\nhttps://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Computers?$offset=100&limit=20\nThe following example returns items 101-120 from the collection of computers."
+								},
+								{
+									"key": "limit",
+									"value": "{{EPMLimit}}",
+									"description": "The number of computers to return.\nType: Number\nValid value: Less than 5000\nMandatory: No"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get EPM version",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{EPMServer}}/EPM/API/<Version>/Server/Version",
+					"protocol": "https",
+					"host": [
+						"{{EPMServer}}"
+					],
+					"path": [
+						"EPM",
+						"API",
+						"<Version>",
+						"Server",
+						"Version"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get sets list",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "basic {{EPMAuthenticationResult}}",
+						"description": "Token generated in the EPM authentication API",
+						"type": "text"
+					},
+					{
+						"key": "VFUser",
+						"value": "{{EPMAuthenticationResult}}",
+						"description": "Token generated in the Windows authentication API",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets?Offset={{EPMOffset}}&Limit={{EPMLimit}}",
+					"protocol": "https",
+					"host": [
+						"{{EPMServer}}"
+					],
+					"path": [
+						"EPM",
+						"API",
+						"{{EPMVersion}}",
+						"Sets"
+					],
+					"query": [
+						{
+							"key": "Offset",
+							"value": "{{EPMOffset}}",
+							"description": "Number of sets to skip, default 0, valid value 0 or higher"
+						},
+						{
+							"key": "Limit",
+							"value": "{{EPMLimit}}",
+							"description": "Maximum number of sets to return, default 50, valid value 1-1000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update ransomware mode",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "basic {{EPMAuthenticationResult}}",
+						"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+						"type": "text"
+					},
+					{
+						"key": "VFUser",
+						"value": "{{EPMAuthenticationResult}}",
+						"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"Mode\": \"Enable\"    // Enable or Disable\r\n}"
+				},
+				"url": {
+					"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies/Ransomware",
+					"protocol": "https",
+					"host": [
+						"{{EPMServer}}"
+					],
+					"path": [
+						"EPM",
+						"API",
+						"{{EPMVersion}}",
+						"Sets",
+						"{{EPMSetID}}",
+						"Policies",
+						"Ransomware"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
