@@ -8,6 +8,9 @@ The EPM Web Services SDK is a RESTful API that can be invoked by any RESTful cli
 The EPM Web Services SDK enables you to perform activities on EPM objects via a REST Web Service interface. Each EPM object has its own URL path in the EPM website that can be accessed using the relevant HTTP/S request verb.
 
 ## Changes
+**20 April 2021** - New postman collection based on the current version of CyberArk EPM
+- Removed older versions of the collection with different names
+
 **22 Jul, 2020** - Reformatting the collection 
 - Rebuilt the collection based on the v11.6 CyberArk EPM Rest API documentation found at https://docs.cyberark.com/Product-Doc/OnlineHelp/EPM/Latest/en/Content/WebServices/API%20Commands.htm
 - New Postman collection name: EPM.postman_environment.json
