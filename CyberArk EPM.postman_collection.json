@@ -140,6 +140,62 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Auth/EPM/Logout",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Auth",
+								"EPM",
+								"Logout"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -159,13 +215,13 @@
 							{
 								"key": "Authorization",
 								"value": "basic {{EPMAuthenticationResult}}",
-								"description": "Token generated in the EPM authentication API",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
 								"type": "text"
 							},
 							{
 								"key": "VFUser",
 								"value": "{{EPMAuthenticationResult}}",
-								"description": "Token generated in the Windows authentication API",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
 								"type": "text"
 							}
 						],
@@ -188,47 +244,47 @@
 								{
 									"key": "Offset",
 									"value": "{{EPMOffset}}",
-									"description": "Number of events to skip\n\nType: Number\n\nValid value: 0 (zero) or higher\n\nDefault value: 0\n\nMandatory: No"
+									"description": "Number of events to skip\nType: Number\nValid value: 0 (zero) or higher\nDefault value: 0\nMandatory: No"
 								},
 								{
 									"key": "Limit",
 									"value": "{{EPMLimit}}",
-									"description": "Maximum number of events to return\n\nType: Number\n\nValid value: 1-100\n\nMandatory: No"
+									"description": "Maximum number of events to return\nType: Number\nValid value: 1-100\nMandatory: No"
 								},
 								{
 									"key": "EventType",
 									"value": "{{EPMEventType}}",
-									"description": "Event type. Specify All or a list of event types separated by commas.\n\nFor the list of event types, see Event Types.\n\nType: String\n\nValid values: All\n\nMandatory: No"
+									"description": "Event type. Specify All or a list of event types separated by commas.\nFor the list of event types, see Event Types.\nType: String\nValid values: All\nMandatory: No"
 								},
 								{
 									"key": "Publisher",
 									"value": "{{EPMPublisher}}",
-									"description": "Digital signature of the application that triggered the event (if applicable). Wildcards and unsigned are supported.\n\nType: String\n\nValid values: The following wildcards:\n\n\"xxx xxx\" - filters the exact value between the quotes\nxxx xxx - filters anything that contains the string\n*xxx xxx* - filters anything that contains the string between the *\nxxx* - filters all strings that start with the value before the *\n*xxx - filters all strings that end with the value after the *\nMandatory: No"
+									"description": "Digital signature of the application that triggered the event (if applicable). Wildcards and unsigned are supported.\nType: String\nValid values: The following wildcards:\n\"xxx xxx\" - filters the exact value between the quotes\nxxx xxx - filters anything that contains the string\n*xxx xxx* - filters anything that contains the string between the *\nxxx* - filters all strings that start with the value before the *\n*xxx - filters all strings that end with the value after the *\nMandatory: No"
 								},
 								{
 									"key": "DateFrom",
 									"value": "{{EPMDateFrom}}",
-									"description": "Only show events since the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not valued, only events from the last day are returned\n\nMandatory: No"
+									"description": "Only show events since the given date\nType: Date\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\nIf DateFrom and DateTo are not valued, only events from the last day are returned\nMandatory: No"
 								},
 								{
 									"key": "DateTo",
 									"value": "{{EPMDateTo}}",
-									"description": "Only show events until the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not valued, only events from the last day are returned\n\nMandatory: No"
+									"description": "Only show events until the given date\nType: Date\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\nIf DateFrom and DateTo are not valued, only events from the last day are returned\nMandatory: No"
 								},
 								{
 									"key": "Justification",
 									"value": "{{EPMJustification}}",
-									"description": "Determines if the event has justification details\n\nNot relevant for ThreatDetection\n\nType: String\n\nValid values: All/WithJustification\n\nDefault values: All\n\nMandatory: No"
+									"description": "Determines if the event has justification details\nNot relevant for ThreatDetection\nType: String\nValid values: All/WithJustification\nDefault values: All\nMandatory: No"
 								},
 								{
 									"key": "ApplicationType",
 									"value": "{{EPMApplicationType}}",
-									"description": "Type of application that triggers the event. Specify All or a list of application types separated by commas.\n\nNot relevant for ThreatDetection\n\nType: String\n\nValid values: Executable, Script, MSI, MSU, ActiveX, Com, Win8App, DLL, DMG, PKG\n\nDefault values: All\n\nMandatory: No"
+									"description": "Type of application that triggers the event. Specify All or a list of application types separated by commas.\nNot relevant for ThreatDetection\nType: String\nValid values: Executable, Script, MSI, MSU, ActiveX, Com, Win8App, DLL, DMG, PKG\nDefault values: All\nMandatory: No"
 								},
 								{
 									"key": "PolicyName",
 									"value": "{{EPMPolicyName}}",
-									"description": "Name of the policy that triggers the event. Wildcards are supported.\n\nNot relevant for ApplicationEvents\n\nType: String\n\nValid values: The following wildcards:\n\n\"xxx xxx\" - filters the exact value between the quotes\nxxx xxx - filters anything that contains the string\n*xxx xxx* - filters anything that contains the string between the *\nxxx* - filters all strings that start with the value before the *\n*xxx - filters all strings that end with the value after the *\nMandatory: No"
+									"description": "Name of the policy that triggers the event. Wildcards are supported.\nNot relevant for ApplicationEvents\nType: String\nValid values: The following wildcards:\n\"xxx xxx\" - filters the exact value between the quotes\nxxx xxx - filters anything that contains the string\n*xxx xxx* - filters anything that contains the string between the *\nxxx* - filters all strings that start with the value before the *\n*xxx - filters all strings that end with the value after the *\nMandatory: No"
 								}
 							]
 						}
@@ -248,13 +304,13 @@
 							{
 								"key": "Authorization",
 								"value": "basic {{EPMAuthenticationResult}}",
-								"description": "Token generated in the EPM authentication API\n\nType: String\n\nValid value: basic <Token>\n\nMandatory: Yes",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
 								"type": "text"
 							},
 							{
 								"key": "VFUser",
 								"value": "{{EPMAuthenticationResult}}",
-								"description": "Token generated in the Windows authentication API\n\nType: String\n\nValid value: <Token>\n\nMandatory: Yes",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
 								"type": "text"
 							}
 						],
@@ -278,37 +334,37 @@
 								{
 									"key": "Offset",
 									"value": "{{EPMOffset}}",
-									"description": "Number of events to skip\n\nType: Number\n\nValid value: 0 (zero) or higher\n\nDefault value: 0\n\nMandatory: No"
+									"description": "Number of events to skip\nType: Number\nValid value: 0 (zero) or higher\nDefault value: 0\nMandatory: No"
 								},
 								{
 									"key": "Limit",
 									"value": "{{EPMLimit}}",
-									"description": "Maximum number of events to return\n\nType: Number\n\nValid value: 1-100\n\nMandatory: No"
+									"description": "Maximum number of events to return\nType: Number\nValid value: 1-100\nMandatory: No"
 								},
 								{
 									"key": "EventType",
 									"value": "{{EPMEventType}}",
-									"description": "Event type. Specify All or a list of event types separated by commas.\n\nFor the list of event types, see Event Types.\n\nType: String\n\nValid values: All\n\nMandatory: No"
+									"description": "Event type. Specify All or a list of event types separated by commas.\nFor the list of event types, see Event Types.\nType: String\nValid values: All\nMandatory: No"
 								},
 								{
 									"key": "DateFrom",
 									"value": "{{EPMDateFrom}}",
-									"description": "Only show events since the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not valued, only events from the last day are returned\n\nMandatory: No"
+									"description": "Only show events since the given date\nType: Date\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\nIf DateFrom and DateTo are not valued, only events from the last day are returned\nMandatory: No"
 								},
 								{
 									"key": "DateTo",
 									"value": "{{EPMDateTo}}",
-									"description": "Only show events until the given date\n\nType: Date\n\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\n\nIf DateFrom and DateTo are not valued, only events from the last day are returned\n\nMandatory: No"
+									"description": "Only show events until the given date\nType: Date\nValid values: ISO-8601 to format dates and UTC time zone - YYYY-MM-DDThh:mm:ssZ\nIf DateFrom and DateTo are not valued, only events from the last day are returned\nMandatory: No"
 								},
 								{
 									"key": "Justification",
 									"value": "{{EPMJustification}}",
-									"description": "Determines if the event has justification details\n\nNot relevant for ThreatDetection\n\nType: String\n\nValid values: All/WithJustification\n\nDefault values: All\n\nMandatory: No"
+									"description": "Determines if the event has justification details\nNot relevant for ThreatDetection\nType: String\nValid values: All/WithJustification\nDefault values: All\n\nMandatory: No"
 								},
 								{
 									"key": "PolicyName",
 									"value": "{{EPMPolicyName}}",
-									"description": "Name of the policy that triggers the event. Wildcards are supported.\n\nNot relevant for ApplicationEvents\n\nType: String\n\nValid values: The following wildcards:\n\n\"xxx xxx\" - filters the exact value between the quotes\nxxx xxx - filters anything that contains the string\n*xxx xxx* - filters anything that contains the string between the *\nxxx* - filters all strings that start with the value before the *\n*xxx - filters all strings that end with the value after the *\nMandatory: No"
+									"description": "Name of the policy that triggers the event. Wildcards are supported.\nNot relevant for ApplicationEvents\nType: String\nValid values: The following wildcards:\n\"xxx xxx\" - filters the exact value between the quotes\nxxx xxx - filters anything that contains the string\n*xxx xxx* - filters anything that contains the string between the *\nxxx* - filters all strings that start with the value before the *\n*xxx - filters all strings that end with the value after the *\nMandatory: No"
 								}
 							]
 						}
@@ -328,13 +384,13 @@
 							{
 								"key": "Authorization",
 								"value": "basic {{EPMAuthenticationResult}}",
-								"description": "Token generated in the EPM authentication API\n\nType: String\n\nValid value: basic <Token>\n\nMandatory: Yes",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
 								"type": "text"
 							},
 							{
 								"key": "VFUser",
 								"value": "{{EPMAuthenticationResult}}",
-								"description": "Token generated in the Windows authentication API\n\nType: String\n\nValid value: <Token>\n\nMandatory: Yes",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
 								"type": "text"
 							}
 						],
@@ -372,13 +428,13 @@
 							{
 								"key": "Authorization",
 								"value": "basic {{EPMAuthenticationResult}}",
-								"description": "Token generated in the EPM authentication API\n\nType: String\n\nValid value: basic <Token>\n\nMandatory: Yes",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
 								"type": "text"
 							},
 							{
 								"key": "VFUser",
 								"value": "{{EPMAuthenticationResult}}",
-								"description": "Token generated in the Windows authentication API\n\nType: String\n\nValid value: <Token>\n\nMandatory: Yes",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
 								"type": "text"
 							}
 						],
@@ -768,6 +824,52 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update ransomware mode",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "basic {{EPMAuthenticationResult}}",
+								"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
+								"type": "text"
+							},
+							{
+								"key": "VFUser",
+								"value": "{{EPMAuthenticationResult}}",
+								"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"Mode\": \"Enable\"    // Enable or Disable\r\n}"
+						},
+						"url": {
+							"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies/Ransomware",
+							"protocol": "https",
+							"host": [
+								"{{EPMServer}}"
+							],
+							"path": [
+								"EPM",
+								"API",
+								"{{EPMVersion}}",
+								"Sets",
+								"{{EPMSetID}}",
+								"Policies",
+								"Ransomware"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -913,7 +1015,7 @@
 					}
 				],
 				"url": {
-					"raw": "https://{{EPMServer}}/EPM/API/<Version>/Server/Version",
+					"raw": "https://{{EPMServer}}/EPM/API/Server/Version",
 					"protocol": "https",
 					"host": [
 						"{{EPMServer}}"
@@ -921,7 +1023,6 @@
 					"path": [
 						"EPM",
 						"API",
-						"<Version>",
 						"Server",
 						"Version"
 					]
@@ -942,15 +1043,14 @@
 					{
 						"key": "Authorization",
 						"value": "basic {{EPMAuthenticationResult}}",
-						"description": "Token generated in the EPM authentication API",
+						"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
 						"type": "text"
 					},
 					{
 						"key": "VFUser",
 						"value": "{{EPMAuthenticationResult}}",
-						"description": "Token generated in the Windows authentication API",
-						"type": "text",
-						"disabled": true
+						"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
+						"type": "text"
 					}
 				],
 				"url": {
@@ -969,59 +1069,13 @@
 						{
 							"key": "Offset",
 							"value": "{{EPMOffset}}",
-							"description": "Number of sets to skip, default 0, valid value 0 or higher"
+							"description": "Number of sets to skip\nType: Number\nValid value: 0 (zero) or higher\nDefault value: 0\nMandatory: No"
 						},
 						{
 							"key": "Limit",
 							"value": "{{EPMLimit}}",
-							"description": "Maximum number of sets to return, default 50, valid value 1-1000"
+							"description": "Maximum number of sets to return\nType: Number\nValid value: 1-1000\nDefault value: 50\nMandatory: No"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update ransomware mode",
-			"request": {
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "basic {{EPMAuthenticationResult}}",
-						"description": "Token generated in the EPM authentication API\nType: String\nValid value: basic <Token>\nMandatory: Yes",
-						"type": "text"
-					},
-					{
-						"key": "VFUser",
-						"value": "{{EPMAuthenticationResult}}",
-						"description": "Token generated in the Windows authentication API\nType: String\nValid value: <Token>\nMandatory: Yes",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n\"Mode\": \"Enable\"    // Enable or Disable\r\n}"
-				},
-				"url": {
-					"raw": "https://{{EPMServer}}/EPM/API/{{EPMVersion}}/Sets/{{EPMSetID}}/Policies/Ransomware",
-					"protocol": "https",
-					"host": [
-						"{{EPMServer}}"
-					],
-					"path": [
-						"EPM",
-						"API",
-						"{{EPMVersion}}",
-						"Sets",
-						"{{EPMSetID}}",
-						"Policies",
-						"Ransomware"
 					]
 				}
 			},
